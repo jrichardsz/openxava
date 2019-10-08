@@ -10,8 +10,8 @@
 	<property name="datasource.prefix" value="java:"/>
 	<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
 	<property name="dist.base.dir" value = ".."/>
-	<property name="dist.dir" value = "${dist.base.dir}/${project}.dist"/>
-	<property name="dist.portlets.dir" value = "${dist.base.dir}/${project}-portlets.war.d"/>
+	<property name="dist.dir" value = "${basedir}/dist"/>
+	<property name="dist.portlets.dir" value = "${basedir}/portlets.war.d"/>
 	<property name="file.ear" value = "${project}.ear"/>
 	<property name="xava.lib" value="${openxava.base.dir}/OpenXava/bin"/>
 	<property name="j2ee.lib" value="${openxava.base.dir}/OpenXava/lib/servlet-api.jar;${openxava.base.dir}/OpenXava/web/WEB-INF/lib/jta.jar;${openxava.base.dir}/OpenXava/web/WEB-INF/lib/ejb.jar;${openxava.base.dir}/OpenXava/lib/jsp-api.jar"/>

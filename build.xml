@@ -1,0 +1,39 @@
+<project name="maven-ox" default="all">
+
+  <target name="all" depends="create_openxava_core_as_maven_project,create_openxava_addons_as_maven_project">
+  </target>
+
+  <target name="create_openxava_core_as_maven_project" depends="init_openxava_core_mvn" >
+    <copyfile src="${basedir}/OpenXava/pom.xml" dest="${basedir}/OpenXavaMvn/pom.xml" />
+    <copydir src="${basedir}/OpenXava/src/" dest="${basedir}/OpenXavaMvn/src/main/java" />
+    <copydir src="${basedir}/OpenXava/xava/" dest="${basedir}/OpenXavaMvn/src/main/resources" />
+    <copydir src="${basedir}/OpenXava/i18n/" dest="${basedir}/OpenXavaMvn/src/main/resources" />
+    <copydir src="${basedir}/OpenXava/properties/" dest="${basedir}/OpenXavaMvn/src/main/resources" />
+  </target>
+
+  <target name="create_openxava_addons_as_maven_project" depends="init_openxava_addons_mvn" >
+    <copyfile src="${basedir}/Addons/pom.xml" dest="${basedir}/AddonsMvn/pom.xml" />
+    <copydir src="${basedir}/Addons/src/" dest="${basedir}/AddonsMvn/src/main/java" />
+    <copydir src="${basedir}/Addons/xava/" dest="${basedir}/AddonsMvn/src/main/resources" />
+  </target>
+
+  <target name="init_openxava_core_mvn" description="init_openxava_core_mvn">
+    <mkdir dir="${basedir}/OpenXavaMvn"/>
+    <mkdir dir="${basedir}/OpenXavaMvn/src"/>
+    <mkdir dir="${basedir}/OpenXavaMvn/src/main"/>
+    <mkdir dir="${basedir}/OpenXavaMvn/src/main/java"/>
+    <mkdir dir="${basedir}/OpenXavaMvn/java/org/openxava/converters/typeadapters"/>
+    <mkdir dir="${basedir}/OpenXavaMvn/src/main/resources"/>
+    <mkdir dir="${basedir}/OpenXavaMvn/src/main/resources/dtds"/>
+  </target>
+
+  <target name="init_openxava_addons_mvn" description="init_openxava_addons_mvn">
+    <mkdir dir="${basedir}/AddonsMvn"/>
+    <mkdir dir="${basedir}/AddonsMvn/src"/>
+    <mkdir dir="${basedir}/AddonsMvn/src/main"/>
+    <mkdir dir="${basedir}/AddonsMvn/src/main/java"/>
+    <mkdir dir="${basedir}/AddonsMvn/src/main/resources"/>
+    <mkdir dir="${basedir}/AddonsMvn/src/main/resources/dtds"/>
+  </target>
+
+</project>

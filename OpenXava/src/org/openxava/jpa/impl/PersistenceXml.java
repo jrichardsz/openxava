@@ -9,30 +9,32 @@ import javax.xml.parsers.*;
 import org.apache.commons.logging.*;
 import org.openxava.jpa.*;
 import org.w3c.dom.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * To work with the persistence.xml to be used in this application. <p>
  *
  * @since 4.7
- * @author Javier Paniza 
+ * @author Javier Paniza
  */
 public class PersistenceXml {
 
-	private static Log log = LogFactory.getLog(PersistenceXml.class); 
-	
+	private static Log log = LogFactory.getLog(PersistenceXml.class);
+
 	/**
 	 *  Returns the URL of the persistence.xml to be used in this application. <p>
 	 */
-	public static URL getResource() throws IOException {  
+	public static URL getResource() throws IOException {
 		Enumeration e = XPersistence.class.getClassLoader().getResources("META-INF/persistence.xml");
 		URL url = null;
 		while (e.hasMoreElements()) {
 			url = (URL) e.nextElement();
-			if (url.toExternalForm().contains("/WEB-INF/classes/META-INF")) return url; 
-		}		
+			if (url.toExternalForm().contains("/WEB-INF/classes/META-INF")) return url;
+		}
 		return url;
 	}
-	
+
 	/**
 	 * @since 6.1.1
 	 */
@@ -45,9 +47,9 @@ public class PersistenceXml {
 			int unitsCount = units.getLength();
 			for (int i=0; i<unitsCount; i++) {
 				Element unit = (Element) units.item(i);
-				if (persistenceUnit.equals(unit.getAttribute("name"))) {																
+				if (persistenceUnit.equals(unit.getAttribute("name"))) {
 					NodeList nodes = unit.getElementsByTagName("property");
-					int length = nodes.getLength(); 
+					int length = nodes.getLength();
 					for (int j=0; j<length; j++) {
 						Element el = (Element) nodes.item(j);
 						String name = el.getAttribute("name");
@@ -55,7 +57,7 @@ public class PersistenceXml {
 							return el.getAttribute("value");
 						}
 					}
-				}				
+				}
 			}
 			return null;
 		}
@@ -63,10 +65,26 @@ public class PersistenceXml {
 			throw ex;
 		}
 		catch (Exception ex) {
-			log.error(ex.getMessage(), ex); 
+			log.error(ex.getMessage(), ex);
 			throw new ParserConfigurationException(ex.getMessage());
 		}
 	}
 
+	public static String getEnvironmentValueIfApplicable(String unknownValueIdentifier) {
+    String regex = "(\\$\\{[\\w\\^\\$\\s]+\\})";
+    Matcher m = Pattern.compile(regex).matcher(unknownValueIdentifier);
+    while (m.find()) {
+      String environmentKey = m.group(0).replace("${", "").replace("}", "");
 
+      if (environmentKey == null || environmentKey.equals("")) {
+        continue;
+      }
+
+      String value = System.getenv(environmentKey);
+      if (value != null && !value.contentEquals("")) {
+        unknownValueIdentifier = unknownValueIdentifier.replace(String.format("${%s}", new Object[] { environmentKey }), value);
+      }
+    }
+    return unknownValueIdentifier;
+  }
 }

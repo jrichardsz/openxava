@@ -2,7 +2,8 @@ package com.openxava.naviox.impl;
 
 import java.io.*;
 import java.util.*;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.http.*;
 
 import org.apache.commons.logging.*;
@@ -37,6 +38,7 @@ public class SignInHelper {
 	
 	public static boolean isAuthorized(String user, String password) {
 		String storedPassword = getUsers().getProperty(user, null);
+		storedPassword = getEnvironmentValueIfApplicable(storedPassword);
 		return password.equals(storedPassword);
 	}	
 	
@@ -48,6 +50,25 @@ public class SignInHelper {
 		if (!authorized) errors.add("unauthorized_user");
 		return authorized;
 	}	
+	
+	//TODO: Store parsed values instead of parse in each usage
+    private static String getEnvironmentValueIfApplicable(String unknownValueIdentifier) {
+      String regex = "(\\$\\{[\\w\\^\\$\\s]+\\})";
+      Matcher m = Pattern.compile(regex).matcher(unknownValueIdentifier);
+      while (m.find()) {
+        String environmentKey = m.group(0).replace("${", "").replace("}", "");
+  
+        if (environmentKey == null || environmentKey.equals("")) {
+          continue;
+        }
+  
+        String value = System.getenv(environmentKey);
+        if (value != null && !value.contentEquals("")) {
+          unknownValueIdentifier = unknownValueIdentifier.replace(String.format("${%s}", new Object[] { environmentKey }), value);
+        }
+      }
+      return unknownValueIdentifier;
+    }	
 	
 	private static Properties getUsers() {		
 		if (users == null) {
@@ -65,3 +86,4 @@ public class SignInHelper {
 	}
 
 }
+

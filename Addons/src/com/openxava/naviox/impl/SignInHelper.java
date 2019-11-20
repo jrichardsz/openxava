@@ -22,6 +22,7 @@ public class SignInHelper {
 	private final static String PROPERTIES_FILE = "naviox-users.properties";
 	private static Log log = LogFactory.getLog(SignInHelper.class);
 	private static Properties users;
+	private static String expectedPassword;
 	
 	public static void init(HttpServletRequest request, View view) {
 	}
@@ -37,9 +38,11 @@ public class SignInHelper {
 	}
 	
 	public static boolean isAuthorized(String user, String password) {
-		String storedPassword = getUsers().getProperty(user, null);
-		storedPassword = getEnvironmentValueIfApplicable(storedPassword);
-		return password.equals(storedPassword);
+	    if(expectedPassword==null) {
+	      String storedPassword = getUsers().getProperty(user, null);
+	      expectedPassword = getEnvironmentValueIfApplicable(storedPassword);  
+	    }		
+		return password.equals(expectedPassword);
 	}	
 	
 	/**
@@ -51,7 +54,6 @@ public class SignInHelper {
 		return authorized;
 	}	
 	
-	//TODO: Store parsed values instead of parse in each usage
     private static String getEnvironmentValueIfApplicable(String unknownValueIdentifier) {
       String regex = "(\\$\\{[\\w\\^\\$\\s]+\\})";
       Matcher m = Pattern.compile(regex).matcher(unknownValueIdentifier);

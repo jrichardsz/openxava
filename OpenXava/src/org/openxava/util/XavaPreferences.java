@@ -523,4 +523,9 @@ public class XavaPreferences {
 		return path != null ? path : System.getProperty("user.home") + System.getProperty("file.separator") + "oxfiles";
 	}
 	
+    public boolean enableFirstSteps() {
+      return "true".equalsIgnoreCase(getProperties().getProperty(
+              "enableFirstSteps", "false").trim());
+    }	
+	
 }

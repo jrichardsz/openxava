@@ -1,16 +1,17 @@
 package org.openxava.jpa.impl;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.xml.parsers.*;
-
-import org.apache.commons.logging.*;
-import org.openxava.jpa.*;
-import org.w3c.dom.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openxava.jpa.XPersistence;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * To work with the persistence.xml to be used in this application. <p>
@@ -69,22 +70,4 @@ public class PersistenceXml {
 			throw new ParserConfigurationException(ex.getMessage());
 		}
 	}
-
-	public static String getEnvironmentValueIfApplicable(String unknownValueIdentifier) {
-    String regex = "(\\$\\{[\\w\\^\\$\\s]+\\})";
-    Matcher m = Pattern.compile(regex).matcher(unknownValueIdentifier);
-    while (m.find()) {
-      String environmentKey = m.group(0).replace("${", "").replace("}", "");
-
-      if (environmentKey == null || environmentKey.equals("")) {
-        continue;
-      }
-
-      String value = System.getenv(environmentKey);
-      if (value != null && !value.contentEquals("")) {
-        unknownValueIdentifier = unknownValueIdentifier.replace(String.format("${%s}", new Object[] { environmentKey }), value);
-      }
-    }
-    return unknownValueIdentifier;
-  }
 }

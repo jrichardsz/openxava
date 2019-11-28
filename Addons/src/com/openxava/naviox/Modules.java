@@ -38,7 +38,9 @@ public class Modules implements Serializable {
 	public static void init(String applicationName) {
 		MetaModuleFactory.setApplication(applicationName);
 		DB.init();
-		createFirstStepsModule(applicationName);
+		if(XavaPreferences.getInstance().enableFirstSteps()) {
+		  createFirstStepsModule(applicationName);
+		}		
 		ModulesHelper.init(applicationName);  
 	}	
 	
